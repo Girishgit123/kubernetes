@@ -5,7 +5,6 @@ pipeline {
         DOCKER_IMAGE = 'myimage'
         DOCKER_REGISTRY = 'girish'
         DOCKER_CREDENTIALS_ID = '9058c779-e5ac-4571-affb-b48c1a893dce'
-        GIT_CREDENTIAL_ID = 'ca7bb99a-807f-4305-af7a-4b4aa6ff72bb'
     }
 
 
@@ -13,7 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the Git repository with specified credentials
-                git branch: 'main', credentials: credentials('$GIT_CREDENTIAL_ID'), , url: 'https://github.com/Girishgit123/kubernetes.git'
+                git branch: 'main', credentialsId: 'ca7bb99a-807f-4305-af7a-4b4aa6ff72bb', url: 'https://github.com/Girishgit123/kubernetes.git'
             }
         }
     }
