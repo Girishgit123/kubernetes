@@ -31,10 +31,12 @@ pipeline {
 
         stage('Build') {
             steps {
-                // Install dependencies and build the Node.js application
-                sh 'npm install'
-                sh 'npm run build'
+                // Use 'nodejs' as the Node.js installation configured in Jenkins
+                node('nodejs') {
+                    // Run build script defined in package.json
+                    sh 'npm run build'
             }
+        }
         }
 
         stage('Publish') {
