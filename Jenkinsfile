@@ -19,13 +19,6 @@ pipeline {
 }
 
     
-
-        stage('Build') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
     
 
         stage('Package') {
