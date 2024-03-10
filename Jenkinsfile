@@ -29,6 +29,14 @@ pipeline {
             }
         }
 
+        stage('Build') {
+            steps {
+                // Install dependencies and build the Node.js application
+                sh 'npm install'
+                sh 'npm run build'
+            }
+        }
+
         stage('Publish') {
             steps {
                 script {
