@@ -20,12 +20,7 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                // Run tests if applicable
-                // sh 'npm test'
-            }
-        }
+    
 
         stage('Package') {
             steps {
