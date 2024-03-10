@@ -13,7 +13,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the Git repository with specified credentials
-                git credentialsId: 'ca7bb99a-807f-4305-af7a-4b4aa6ff72bb' , url: 'https://github.com/Girishgit123/kubernetes.git'
+                git credentialsId: 'GIT_CREDENTIAL_ID' , url: 'https://github.com/Girishgit123/kubernetes.git'
             }
         }
     }
