@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "description": "this is my first project",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  
+    "scripts": {
+      "install": "npm install",
+      "test": "npm test",
+      "build": "npm run build"
+    }
+    
   },
   "author": "",
   "license": "ISC"
