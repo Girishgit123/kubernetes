@@ -19,15 +19,7 @@ pipeline {
 }
 
     
-    
 
-        stage('Package') {
-            steps {
-                script {
-                    docker.build(DOCKER_IMAGE)
-                }
-            }
-        }
 
          stage('Install Dependencies') {
             steps {
@@ -40,6 +32,15 @@ pipeline {
             steps {
                 // Build the Node.js application
                 sh 'npm run build'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                // Create package (e.g., tarball, zip file, Docker image, etc.)
+                // Add your packaging commands here
+                // For example, to create a tarball of the built application:
+                sh 'tar -czvf myapp.tar.gz ./dist'
             }
         }
 
