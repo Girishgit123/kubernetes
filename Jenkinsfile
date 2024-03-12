@@ -18,22 +18,17 @@ pipeline {
     }
 }
 
-stages('Package') {
-            steps {
-                // Create package (e.g., tarball, zip file, Docker image, etc.)
-                // Add your packaging commands here
-                // For example, to create a tarball of the built application:
-                sh 'tar -czvf myapp.tar.gz ./dist'
-            }
-      }
-
-    
-
 
          stage('Install Dependencies') {
             steps {
                 // Install Node.js dependencies
                 sh 'npm install'
+            }
+        }
+
+         stage('Run Tests') {
+            steps {
+                sh 'npm test'
             }
         }
 
