@@ -18,14 +18,14 @@ pipeline {
     }
 }
 
-stage('Package') {
+stages('Package') {
             steps {
                 // Create package (e.g., tarball, zip file, Docker image, etc.)
                 // Add your packaging commands here
                 // For example, to create a tarball of the built application:
                 sh 'tar -czvf myapp.tar.gz ./dist'
             }
-        }
+      }
 
     
 
