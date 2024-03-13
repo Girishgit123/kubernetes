@@ -27,7 +27,7 @@ pipeline {
         }
             stage(push to dockerhub){
                 steps{
-                    echo "Push the image to docker hub"
+                echo "Push the image to docker hub"
                 withCredentials([usernamePassword(credentialsId:"dockerid",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
                 sh "docker tag myimage ${env.dockerHubUser}/myimage:latest"
                 sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
