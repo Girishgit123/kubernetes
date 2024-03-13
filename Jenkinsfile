@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'myimage'
         DOCKER_REGISTRY = 'girish'
-        DOCKER_CREDENTIALS_ID = '9058c779-e5ac-4571-affb-b48c1a893dce'
+        DOCKER_CREDENTIALS_ID = 'dockerid'
     }
 
 
@@ -12,22 +12,31 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the Git repository with specified credentials
-                git branch: 'main', credentialsId: 'ca7bb99a-807f-4305-af7a-4b4aa6ff72bb', url: 'https://github.com/Girishgit123/kubernetes.git'
+                git branch: 'main', credentialsId: 'ca7bb99a-807f-4305-af7a-4b4aa6ff72bb', url: 'https://github.com/Girishgit123/kubernetes.git'   
             }
         }
     }
 }
 
 
-        stage('Publish') {
+        stage('build') {
             steps {
                 script {
-                    docker.withRegistry(DOCKER_REGISTRY, DOCKER_CREDENTIALS_ID) {
-                        docker.image(DOCKER_IMAGE).push('latest')
+                    echo "Building the image"
+                sh "docker build -t myimage ."
                     }
                 }
             }
-        }
+            stage(push to dockerhub){
+                steps{
+                    echo "Push the image to docker hub"
+                withCredentials([usernamePassword(credentialsId:"dockerid",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
+                sh "docker tag myimage ${env.dockerHubUser}/myimage:latest"
+                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                sh "docker push ${env.dockerHubUser}/myimage:latest"
+                }
+            }
+    
 
         stage('Deploy') {
             steps {
