@@ -25,7 +25,7 @@ pipeline {
                 sh "docker build -t myimage ."
             }
         }
-            stage(push to dockerhub){
+            stage("Push to Docker Hub"){
                 steps{
                 echo "Push the image to docker hub"
                 withCredentials([usernamePassword(credentialsId:"dockerid",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
