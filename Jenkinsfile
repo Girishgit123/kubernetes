@@ -16,10 +16,10 @@ pipeline {
             }
         }
     }
-}
 
 
-         stage("Build"){
+
+         stage('Build'){
             steps {
                 echo "Building the image"
                 sh "docker build -t myimage ."
@@ -44,3 +44,5 @@ pipeline {
                 }
             }
         }
+}
+
