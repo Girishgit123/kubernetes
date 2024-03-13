@@ -19,14 +19,12 @@ pipeline {
 }
 
 
-        stage('build') {
+         stage("Build"){
             steps {
-                script {
-                    echo "Building the image"
+                echo "Building the image"
                 sh "docker build -t myimage ."
-                    }
-                }
             }
+        }
             stage(push to dockerhub){
                 steps{
                     echo "Push the image to docker hub"
@@ -35,6 +33,7 @@ pipeline {
                 sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
                 sh "docker push ${env.dockerHubUser}/myimage:latest"
                 }
+            }
             }
     
 
