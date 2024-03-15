@@ -1,37 +1,68 @@
 pipeline {
-    agent any 
+    agent any
     
-    stages{
-        stage("Clone Code"){
+    environment {
+        DOCKER_IMAGE = 'kubernetes' // Name of your Docker image
+        CONTAINER_NAME = 'dreamy_hypatia' // Name of your Docker container
+    }
+
+    stages {
+        stage('Checkout') {
             steps {
-                echo "Cloning the code"
-                git branch: 'main', credentialsId: 'ca7bb99a-807f-4305-af7a-4b4aa6ff72bb', url: 'https://github.com/Girishgit123/kubernetes.git'
+                checkout scm
             }
         }
-        stage("Build"){
+
+        stage('Build') {
             steps {
-                echo "Building the image"
-                sh "docker build -t myimage ."
-            }
-        }
-        stage("Push to Docker Hub"){
-            steps {
-                echo "Pushing the image to docker hub"
-                withCredentials([usernamePassword(credentialsId:"dockerid",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                sh "docker tag myimage ${env.dockerHubUser}/myimage:latest"
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker push ${env.dockerHubUser}/myimage:latest"
+                script {
+                    // Install dependencies and build your Node.js application
+                    sh 'npm install'
+                    sh 'npm run build' // Modify this command according to your build process
                 }
             }
         }
-        stage("Deploy"){
+
+        stage('Docker Build') {
             steps {
-                echo "Deploying the container"
-                docker.image(DOCKER_IMAGE).run('-p 3000:3000 -d')
-                
+                script {
+                    // Build Docker image
+                    docker.build(env.DOCKER_IMAGE)
+                }
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                script {
+                    // Run Docker container
+                    docker.image(env.DOCKER_IMAGE).run("--name ${env.CONTAINER_NAME} -d -p 3000:3000") // Modify the port mapping as needed
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Run tests if needed
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Perform any additional deployment steps here
+            }
+        }
+    }
+
+    post {
+        always {
+
+            // Clean up
+            script {
+                docker.image(env.DOCKER_IMAGE).stop()
+                docker.image(env.DOCKER_IMAGE).remove()
             }
         }
     }
 }
-
 
