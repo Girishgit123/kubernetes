@@ -2,67 +2,33 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE = 'kubernetes' // Name of your Docker image
-        CONTAINER_NAME = 'dreamy_hypatia' // Name of your Docker container
+        DOCKER_IMAGE_NAME = 'nodejsimage' // Name for your Docker image
+        DOCKER_IMAGE_TAG = 'girish186/nodejsimage' // Tag for your Docker image
+        CONTAINER_PORT = 3000 // Port your Node.js application listens on
+        HOST_PORT = 8080 // Port on the host machine to bind to
     }
-
+    
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git 'https://github.com/Girishgit123/kubernetes.git' // Your Node.js application repository URL
             }
         }
-
-        stage('Build') {
+        
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Install dependencies and build your Node.js application
-                    sh 'npm install'
-                    sh 'npm run build' // Modify this command according to your build process
+                    docker.build("${nodejsimage}:${girish186/nodejsimage}") // Build Docker image
                 }
             }
         }
-
-        stage('Docker Build') {
+        
+        stage('Run Docker Container') {
             steps {
                 script {
-                    // Build Docker image
-                    docker.build(env.DOCKER_IMAGE)
+                    docker.run("-p ${HOST_PORT}:${CONTAINER_PORT} -d ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}") // Run Docker container
                 }
-            }
-        }
-
-        stage('Docker Run') {
-            steps {
-                script {
-                    // Run Docker container
-                    docker.image(env.DOCKER_IMAGE).run("--name ${env.CONTAINER_NAME} -d -p 3000:3000") // Modify the port mapping as needed
-                }
-            }
-        }
-
-        stage('Test') {
-            steps {
-                // Run tests if needed
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                // Perform any additional deployment steps here
-            }
-        }
-    }
-
-    post {
-        always {
-
-            // Clean up
-            script {
-                docker.image(env.DOCKER_IMAGE).stop()
-                docker.image(env.DOCKER_IMAGE).remove()
             }
         }
     }
 }
-
