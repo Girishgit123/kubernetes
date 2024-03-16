@@ -6,6 +6,8 @@ pipeline {
         DOCKER_IMAGE_TAG = 'girish186/nodejsimage' // Tag for your Docker image
         CONTAINER_PORT = 3000 // Port your Node.js application listens on
         HOST_PORT = 8080 // Port on the host machine to bind to
+        GIT_USERNAME = credentials('Girishgit123') // Jenkins credential ID for Git username
+        GIT_PASSWORD = credentials('Ramrao@1')
     }
     
     stages {
