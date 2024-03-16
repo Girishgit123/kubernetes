@@ -1,41 +1,52 @@
 pipeline {
     agent any
-    
+
     environment {
-        DOCKER_IMAGE_NAME = 'nodejsimage' // Name for your Docker image
-        DOCKER_IMAGE_TAG = 'girish186/nodejsimage' // Tag for your Docker image
-        CONTAINER_PORT = 3000 // Port your Node.js application listens on
-        HOST_PORT = 8080 // Port on the host machine to bind to
-       
+        DOCKER_IMAGE_NAME = "nodejsimage"
+        DOCKER_REGISTRY_CREDENTIALS = 'dockergloabal'
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
-                // Use withCredentials to bind global Git credentials
-                withCredentials([usernamePassword(credentialsId: 'gitglobal', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-                    // Inside this block, GIT_USERNAME and GIT_PASSWORD environment variables will be available
-                    git credentialsId: 'gitglobal', url: 'https://github.com/Girishgit123/kubernetes.git', branch: 'main'
-                }
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: '*/main']], 
+                          userRemoteConfigs: [[url: 'https://github.com/Girishgit123/kubernetes.git']]])
             }
         }
-        
-        // Add more stages as needed
-    }
-        
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
                 script {
-                    docker.build("${nodejsimage}:${girish186/nodejsimage}") // Build Docker image
+                    docker.build("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
                 }
             }
         }
-        
-        stage('Run Docker Container') {
+
+        stage('Test') {
+            steps {
+                // Add your test commands here
+                sh 'npm install'
+                sh 'npm test'
+            }
+        }
+
+        stage('Push to Docker Registry') {
             steps {
                 script {
-                    docker.run("-p ${HOST_PORT}:${CONTAINER_PORT} -d ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}") // Run Docker container
+                    withCredentials([string(credentialsId: "${DOCKER_REGISTRY_CREDENTIALS}", variable: 'DOCKER_PASSWORD')]) {
+                        docker.withRegistry('https://your.docker.registry', 'docker-registry-credentials') {
+                            docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}").push()
+                        }
+                    }
                 }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // If needed, deploy your Docker container here
+                sh 'docker run -d -p 8080:8080 ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}'
             }
         }
     }
+}
