@@ -9,8 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
     steps {
-        checkout([$class: 'GitSCM', 
-                  branches: [[name: '*/main']], 
+        checkout([branches: [[name: '*/main']], 
                   userRemoteConfigs: [[url: 'https://github.com/Girishgit123/kubernetes.git']],
                   credentialsId: 'gitglobal'])
     }
