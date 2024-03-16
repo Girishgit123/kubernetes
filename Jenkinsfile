@@ -6,16 +6,22 @@ pipeline {
         DOCKER_IMAGE_TAG = 'girish186/nodejsimage' // Tag for your Docker image
         CONTAINER_PORT = 3000 // Port your Node.js application listens on
         HOST_PORT = 8080 // Port on the host machine to bind to
-        GIT_USERNAME = credentials('Girishgit123') // Jenkins credential ID for Git username
-        GIT_PASSWORD = credentials('Ramrao@1')
+       
     }
     
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Girishgit123/kubernetes.git' // Your Node.js application repository URL
+                // Use withCredentials to bind global Git credentials
+                withCredentials([usernamePassword(credentialsId: 'gitglobal', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                    // Inside this block, GIT_USERNAME and GIT_PASSWORD environment variables will be available
+                    git credentialsId: 'gitglobal', url: 'https://github.com/Girishgit123/kubernetes.git', branch: 'main'
+                }
             }
         }
+        
+        // Add more stages as needed
+    }
         
         stage('Build Docker Image') {
             steps {
