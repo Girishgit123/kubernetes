@@ -7,13 +7,12 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-    steps {
-        checkout([branches: [[name: '*/main']], 
-                  userRemoteConfigs: [[url: 'https://github.com/Girishgit123/kubernetes.git']],
-                  credentialsId: 'gitglobal'])
+        
+    stage('Checkout from Git') {
+            steps {
+                git credentialsId: 'gitglobal', url: 'https://github.com/Girishgit123/kubernetes.git'
+            }
     }
-}
 
         stage('Build') {
             steps {
